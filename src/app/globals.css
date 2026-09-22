@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fbfaf7;
+  --ink: #1c1b18;
+  --muted: #6f6c64;
+  --line: #e6e2d9;
+  --panel: #f2efe8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #121210;
+    --ink: #ecebe6;
+    --muted: #8f8c83;
+    --line: #2a2926;
+    --panel: #1c1b18;
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-panel: var(--panel);
+  --font-sans: var(--font-geist-sans);
+}
+
+body {
+  background: var(--background);
+  color: var(--ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+.btn {
+  @apply rounded border border-line px-2 py-0.5 text-[12px] text-muted hover:border-ink hover:text-ink;
+}
