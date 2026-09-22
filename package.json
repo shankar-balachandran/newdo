@@ -9,7 +9,7 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "deploy": "npm run build && npx wrangler pages deploy out --project-name newdo"
+    "deploy": "npm run build && npx wrangler deploy"
   },
   "dependencies": {
     "chrono-node": "^2.10.1",
