@@ -3,6 +3,7 @@ import { createMemoryStore } from "./memory";
 import type { Store, Snapshot } from "./store";
 
 const KEY = "newdo:v1";
+const LOAD_TIMEOUT_MS = 2500;
 type Persisted = Omit<Snapshot, "hydrated">;
 
 /**
@@ -10,6 +11,11 @@ type Persisted = Omit<Snapshot, "hydrated">;
  * and writes the whole snapshot (debounced) after every change.
  * Data volume is tiny, so whole-snapshot writes are fine for v0.
  * IndexedDB persists per origin, so a static deploy needs no backend.
+ *
+ * If IndexedDB is slow or wedged (private mode, a blocked delete, a stuck
+ * connection) the page shows the seed after a short timeout rather than
+ * "Loading…" forever. Saves stay suppressed until the real load settles, so
+ * stored data is never overwritten by the seed.
  */
 export function createPersistentStore(seed: Persisted): Store {
   const inner = createMemoryStore({ obligations: [], people: [], rules: [] }, false);
@@ -28,15 +34,25 @@ export function createPersistentStore(seed: Persisted): Store {
 
   inner.subscribe(save);
 
+  const fallback = setTimeout(() => {
+    if (loading) {
+      console.warn("newdo: IndexedDB slow, showing seed while waiting");
+      inner.load(seed);
+    }
+  }, LOAD_TIMEOUT_MS);
+
   get<Persisted>(KEY)
     .then((stored) => {
+      clearTimeout(fallback);
       loading = false;
-      inner.load(stored ?? seed);
+      if (stored) inner.load(stored);
+      else if (!inner.snapshot().hydrated) inner.load(seed);
     })
     .catch((e) => {
+      clearTimeout(fallback);
       console.warn("newdo: load failed, using seed", e);
       loading = false;
-      inner.load(seed);
+      if (!inner.snapshot().hydrated) inner.load(seed);
     });
 
   return inner;

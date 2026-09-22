@@ -166,3 +166,5 @@ export const obligations: Obligation[] = [
 ];
 
 export const rules: Rule[] = [];
+
+export const seedIds = new Set(obligations.map((o) => o.id));

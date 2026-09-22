@@ -2,6 +2,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { resetToSeed, useSnapshot } from "@/lib/store/useStore";
+import { seedIds } from "@/lib/store/seed";
 import { rank } from "@/lib/rank/urgency";
 import { ObligationRow } from "./ObligationRow";
 import { acceptAgentResult, confirm, drop, promoteScratch, submitInput } from "@/lib/actions";
@@ -33,7 +34,7 @@ export function NowScreen() {
   }
 
   // Untouched demo data: nothing captured by the user yet, no rules learned.
-  const isDemo = snap.obligations.every((o) => o.origin.ref === "seed") && snap.rules.length === 0 && snap.scratch.length === 0;
+  const isDemo = snap.obligations.every((o) => seedIds.has(o.id)) && snap.rules.length === 0 && snap.scratch.length === 0;
 
   return (
     <main className="mx-auto w-full max-w-xl px-4 py-8 sm:py-12">
