@@ -32,6 +32,9 @@ export function NowScreen() {
     return <main className="mx-auto w-full max-w-xl px-4 py-12 text-muted">Loading…</main>;
   }
 
+  // Untouched demo data: nothing captured by the user yet, no rules learned.
+  const isDemo = snap.obligations.every((o) => o.origin.ref === "seed") && snap.rules.length === 0 && snap.scratch.length === 0;
+
   return (
     <main className="mx-auto w-full max-w-xl px-4 py-8 sm:py-12">
       <header className="flex items-baseline justify-between">
@@ -43,6 +46,14 @@ export function NowScreen() {
           </button>
         </div>
       </header>
+
+      {isDemo && (
+        <p className="mt-4 rounded-md bg-panel px-3 py-2 text-[13px] leading-snug text-muted">
+          <span className="text-ink">This is demo data.</span> Type what you owe in the box at the bottom. newdo works out
+          who it&apos;s for, when it&apos;s due and how big it is, then shows the few things that matter today, each with a reason.{" "}
+          <Link href="/how" className="underline underline-offset-2 hover:text-ink">How it works</Link>
+        </p>
+      )}
 
       <ul className="mt-6">
         {views.now.map((r) => (
