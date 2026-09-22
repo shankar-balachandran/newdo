@@ -40,6 +40,7 @@ newdo inverts it. Type what you owe in plain words. It works out who, when and h
 No model. No account. Runs in your browser.
 
 newdo.beaverminds.com
+Live on Product Hunt today: producthunt.com/products/newdo-2
 
 [attach docs/walkthrough.gif]
 
@@ -73,6 +74,8 @@ New from Beaverminds: newdo, a rethink of the todo list for a world where softwa
 Type what you owe. It works out who, when and how big. It shows you what matters today, with a reason. Correct it once and it remembers.
 
 Local-first, no account, no model. Try it: newdo.beaverminds.com
+
+Launching on Product Hunt today: https://www.producthunt.com/products/newdo-2
 
 ---
 
