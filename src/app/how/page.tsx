@@ -88,7 +88,11 @@ export default function How() {
 
       <Section title="Feedback">
         <p>
-          This is an early experiment. If any of it feels right or wrong, tell me:{" "}
+          This is an early experiment from{" "}
+          <a href="https://beaverminds.com/labs" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-ink">
+            Beaverminds Labs
+          </a>
+          , built and launched in one working day. If any of it feels right or wrong, tell me:{" "}
           <a href="mailto:shankar@beaverminds.com?subject=newdo" className="underline underline-offset-2 hover:text-ink">
             shankar@beaverminds.com
           </a>

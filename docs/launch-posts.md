@@ -64,6 +64,7 @@ It opens with demo data. Try it in thirty seconds and tell me whether the "reaso
 
 newdo.beaverminds.com
 Launching on Product Hunt today: https://www.producthunt.com/products/newdo-2
+How it was built in a day, and what we would tell a founder: https://beaverminds.com/blog/one-day-mvp-newdo-lessons
 
 ---
 

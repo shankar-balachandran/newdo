@@ -193,6 +193,10 @@ export function NowScreen() {
         <a href="mailto:shankar@beaverminds.com?subject=newdo" className="hover:text-ink">
           shankar@beaverminds.com
         </a>
+        <span className="mx-2">·</span>
+        <a href="https://beaverminds.com/labs" target="_blank" rel="noopener noreferrer" className="hover:text-ink">
+          a Beaverminds experiment
+        </a>
       </footer>
     </main>
   );
