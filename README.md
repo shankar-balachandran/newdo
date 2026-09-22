@@ -5,6 +5,12 @@
 An AI-first rethink of the todo list. The system maintains a model of your
 obligations; you confirm, correct, and decide. Read `SPEC.md` first.
 
+## Using it
+
+The in-app guide at `/how` explains the Now screen, the single input, proposed
+items, corrections that become rules, and where data lives. A GIF walkthrough is
+in `docs/walkthrough.gif`.
+
 ## Run
 
 ```

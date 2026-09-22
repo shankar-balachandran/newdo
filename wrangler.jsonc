@@ -3,6 +3,8 @@
   "name": "newdo",
   "compatibility_date": "2026-09-01",
   // Static site: Next.js `output: "export"` writes to ./out. No Worker code.
+  // Custom domain on the beaverminds.com zone. Wrangler creates the DNS record.
+  "routes": [{ "pattern": "newdo.beaverminds.com", "custom_domain": true }],
   "assets": {
     "directory": "./out",
     "html_handling": "auto-trailing-slash",

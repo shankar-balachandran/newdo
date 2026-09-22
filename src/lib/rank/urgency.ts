@@ -119,7 +119,7 @@ function effortText(e: Obligation["effort"]) {
   return { minutes: "~15 min", hour: "~1 hr", half_day: "half a day", day: "a day", multi_day: "several days" }[e];
 }
 
-export function reason(o: Obligation, people: Person[], now: Date): string {
+export function reason(o: Obligation, people: Person[], now: Date, rules: Rule[] = []): string {
   const parts: string[] = [];
   const names = o.forWhom.map((id) => people.find((p) => p.id === id)?.name ?? "someone");
   const waitedDays = Math.floor(daysBetween(new Date(o.origin.capturedAt), now));
@@ -134,7 +134,11 @@ export function reason(o: Obligation, people: Person[], now: Date): string {
   }
   if (o.deadline) {
     const when = relDay(o.deadline.at, now);
-    parts.push(o.deadline.hardness === "hard" ? `Due ${when} (${o.deadline.source}).` : `Ideally ${when}.`);
+    const hard = effectiveHardness(o, rules) === "hard";
+    // Only show the source when it adds information beyond the day itself.
+    const src = o.deadline.source.trim();
+    const redundant = src.toLowerCase() === when.toLowerCase() || /^(next |this )?(mon|tues|wednes|thurs|fri|satur|sun)day$/i.test(src) || /^(today|tomorrow)$/i.test(src);
+    parts.push(hard ? `Due ${when}${redundant ? "" : ` (${src})`}.` : `Ideally ${when}.`);
   }
   const skips = skipCount(o);
   if (skips >= DECAY_SKIPS) parts.push(`You've skipped this ${skips} times.`);
@@ -154,7 +158,7 @@ export function rank(
     .map((o) => ({
       obligation: o,
       score: score(o, people, rules, now),
-      reason: reason(o, people, now),
+      reason: reason(o, people, now, rules),
       decaying: isDecaying(o, now),
     }))
     .sort((a, b) => b.score - a.score);

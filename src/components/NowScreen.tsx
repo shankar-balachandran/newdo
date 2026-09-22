@@ -1,5 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { resetToSeed, useSnapshot } from "@/lib/store/useStore";
 import { rank } from "@/lib/rank/urgency";
 import { ObligationRow } from "./ObligationRow";
@@ -35,9 +36,12 @@ export function NowScreen() {
     <main className="mx-auto w-full max-w-xl px-4 py-8 sm:py-12">
       <header className="flex items-baseline justify-between">
         <h1 className="text-lg font-semibold tracking-tight">{today}</h1>
-        <button onClick={() => setPanel(panel === "waiting" ? "none" : "waiting")} className="text-[13px] text-muted hover:text-ink">
-          ▪ {views.waiting.length} waiting
-        </button>
+        <div className="flex gap-4 text-[13px] text-muted">
+          <Link href="/how" className="hover:text-ink">how it works</Link>
+          <button onClick={() => setPanel(panel === "waiting" ? "none" : "waiting")} className="hover:text-ink">
+            ▪ {views.waiting.length} waiting
+          </button>
+        </div>
       </header>
 
       <ul className="mt-6">
