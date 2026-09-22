@@ -173,6 +173,10 @@ export function NowScreen() {
         </button>
         <span className="mx-2">·</span>
         <span>stored in this browser only</span>
+        <span className="mx-2">·</span>
+        <a href="mailto:shankar@beaverminds.com?subject=newdo" className="hover:text-ink">
+          shankar@beaverminds.com
+        </a>
       </footer>
     </main>
   );
