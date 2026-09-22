@@ -77,8 +77,9 @@ export default function How() {
         <p>
           Everything is stored in your browser only. Nothing is sent to a server, and there is no
           account. That also means it does not follow you to another device yet. The app opens
-          with demo data so you can see how it behaves. <em>Reset to demo data</em> at the bottom
-          brings it back.
+          with demo data so you can see how it behaves. <em>Start from scratch</em> at the bottom
+          empties everything; <em>reset to demo data</em> brings the demo back. People are learned
+          from what you type: the first time you write &ldquo;send Ravi the deck&rdquo;, Ravi exists.
         </p>
         <p className="mt-2">
           No AI model is involved in this version. Dates, people, and effort are inferred with

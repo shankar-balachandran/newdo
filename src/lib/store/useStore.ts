@@ -23,6 +23,12 @@ export function resetToSeed() {
   getStore().load(seed);
 }
 
+/** Empty everything. Keeps only "you"; people are learned from what you type. */
+export function startFromScratch() {
+  const me = people.find((p) => p.relation === "self")!;
+  getStore().load({ obligations: [], people: [me], rules: [], scratch: [] });
+}
+
 export function useSnapshot() {
   const s = getStore();
   return useSyncExternalStore(s.subscribe, s.snapshot, () => serverSnapshot);

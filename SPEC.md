@@ -136,6 +136,8 @@ Rules:
 - **Proposed items are counted, not shown.** Tapping the count opens a confirm/
   dismiss review, one item at a time, swipe-speed.
 - **Backlog is one tap away, always.** Never hidden, never default.
+- **The input stays at the bottom and stays visible.** The list is the output, so it comes first. The input is sticky so it never scrolls away, and "/" focuses it.
+- **People are learned, never entered.** A name in a typed sentence ("send Ravi the deck") creates a Person on first sight. "Start from scratch" empties everything but you.
 
 ### 4.1 Interactions on an item
 

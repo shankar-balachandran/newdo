@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { rulesAdapter } from "../rules";
+import { rulesAdapter, learnPeople } from "../rules";
 import { people, obligations } from "@/lib/store/seed";
 import type { Context } from "../adapter";
 
@@ -71,5 +71,20 @@ describe("answer", () => {
   it("answers waiting questions", async () => {
     const a = await rulesAdapter.answer("what am I waiting on from Priya?", ctx);
     expect(a).toContain("hiring plan");
+  });
+});
+
+describe("learnPeople", () => {
+  it("learns a new name from a verb pattern and skips known people and day names", () => {
+    const learned = learnPeople("send Ravi the deck by Friday", people);
+    expect(learned.map((p) => p.name)).toEqual(["Ravi"]);
+    expect(learnPeople("send Arun the deck", people)).toEqual([]);
+    expect(learnPeople("book dentist for Monday", people)).toEqual([]);
+  });
+
+  it("captures for a person the store has never seen", async () => {
+    const r = await rulesAdapter.extract("ask Ravi about the invoice", origin, { ...ctx, people: [people[0]] });
+    expect(r.newPeople.map((p) => p.name)).toEqual(["Ravi"]);
+    expect(r.obligations[0].forWhom).toEqual([r.newPeople[0].id]);
   });
 });

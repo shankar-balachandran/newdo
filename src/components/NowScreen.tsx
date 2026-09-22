@@ -1,7 +1,7 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { resetToSeed, useSnapshot } from "@/lib/store/useStore";
+import { resetToSeed, startFromScratch, useSnapshot } from "@/lib/store/useStore";
 import { seedIds } from "@/lib/store/seed";
 import { rank } from "@/lib/rank/urgency";
 import { ObligationRow } from "./ObligationRow";
@@ -15,6 +15,21 @@ export function NowScreen() {
   const [panel, setPanel] = useState<Panel>("none");
   const [input, setInput] = useState("");
   const [flash, setFlash] = useState<string | null>(null);
+  const [confirmAction, setConfirmAction] = useState<"reset" | "scratch" | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // "/" focuses the input from anywhere, like search on most sites.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null;
+      if (e.key === "/" && !(t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA"))) {
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   const today = new Date().toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "short" });
   const name = (id: string) => snap.people.find((p) => p.id === id)?.name ?? id;
@@ -35,6 +50,7 @@ export function NowScreen() {
 
   // Untouched demo data: nothing captured by the user yet, no rules learned.
   const isDemo = snap.obligations.every((o) => seedIds.has(o.id)) && snap.rules.length === 0 && snap.scratch.length === 0;
+  const isEmpty = snap.obligations.length === 0 && snap.scratch.length === 0;
 
   return (
     <main className="mx-auto w-full max-w-xl px-4 py-8 sm:py-12">
@@ -60,7 +76,11 @@ export function NowScreen() {
         {views.now.map((r) => (
           <ObligationRow key={r.obligation.id} o={r.obligation} reason={r.reason} people={snap.people} decaying={r.decaying} />
         ))}
-        {views.now.length === 0 && <li className="py-8 text-center text-muted">Nothing for now. Good.</li>}
+        {views.now.length === 0 && (
+          <li className="py-8 text-center text-muted">
+            {isEmpty ? "Nothing yet. Type what you owe below, in your own words." : "Nothing for now. Good."}
+          </li>
+        )}
 
         {views.review.map((o) => (
           <li key={o.id} className="border-t border-line py-4">
@@ -171,8 +191,9 @@ export function NowScreen() {
         </Panel>
       )}
 
-      <form onSubmit={onSubmit} className="mt-8">
+      <form onSubmit={onSubmit} className="sticky bottom-0 mt-8 bg-background pb-2 pt-3">
         <input
+          ref={inputRef}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="type anything…"
@@ -183,10 +204,25 @@ export function NowScreen() {
         </div>
       </form>
 
-      <footer className="mt-12 text-[11px] text-muted">
-        <button onClick={() => { if (window.confirm("Replace everything with the demo data?")) resetToSeed(); }} className="hover:text-ink">
-          reset to demo data
-        </button>
+      <footer className="mt-6 text-[11px] text-muted">
+        {confirmAction ? (
+          <span>
+            {confirmAction === "reset" ? "Replace everything with the demo data?" : "Delete everything and start empty?"}{" "}
+            <button
+              onClick={() => { (confirmAction === "reset" ? resetToSeed : startFromScratch)(); setConfirmAction(null); setPanel("none"); }}
+              className="ml-1 text-ink underline underline-offset-2"
+            >
+              yes
+            </button>
+            <button onClick={() => setConfirmAction(null)} className="ml-2 hover:text-ink">no</button>
+          </span>
+        ) : (
+          <>
+            <button onClick={() => setConfirmAction("scratch")} className="hover:text-ink">start from scratch</button>
+            <span className="mx-2">·</span>
+            <button onClick={() => setConfirmAction("reset")} className="hover:text-ink">reset to demo data</button>
+          </>
+        )}
         <span className="mx-2">·</span>
         <span>stored in this browser only</span>
         <span className="mx-2">·</span>

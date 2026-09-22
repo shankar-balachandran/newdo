@@ -76,6 +76,7 @@ export async function submitInput(raw: string): Promise<InputOutcome> {
     case "capture": {
       const origin = { channel: "typed" as const, ref: "input", excerpt: cls.text, capturedAt: now() };
       const res = await adapter.extract(cls.text, origin, c);
+      for (const person of res.newPeople) s.putPerson(person);
       for (const x of res.obligations) {
         s.putObligation({
           ...x,
@@ -90,7 +91,8 @@ export async function submitInput(raw: string): Promise<InputOutcome> {
         });
       }
       const first = res.obligations[0];
-      const bits = [first?.forWhom.length ? "for someone" : null, first?.deadline ? `due ${first.deadline.source}` : null].filter(Boolean);
+      const names = first?.forWhom.map((id) => [...c.people, ...res.newPeople].find((p) => p.id === id)?.name).filter(Boolean) ?? [];
+      const bits = [names.length ? `for ${names.join(", ")}` : null, first?.deadline ? `due ${first.deadline.source}` : null].filter(Boolean);
       return { kind: "capture", message: `Proposed: ${first?.title}${bits.length ? ` (${bits.join(", ")})` : ""}. Confirm it below.` };
     }
   }

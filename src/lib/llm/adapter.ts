@@ -23,6 +23,8 @@ export type Extracted = Omit<Obligation, "id" | "history" | "origin" | "status" 
 
 export interface ExtractResult {
   obligations: Extracted[];
+  /** People mentioned that the store doesn't know yet. Created on confirm. */
+  newPeople: Person[];
   trace: { model: string; promptHash: string };
 }
 

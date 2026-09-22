@@ -24,6 +24,7 @@ export interface Store {
   putObligation(o: Obligation): void;
   appendEvent(obligationId: string, ev: Event): void;
   putRule(r: Rule): void;
+  putPerson(p: Person): void;
   addScratch(text: string): void;
   promoteScratch(id: string): ScratchLine | undefined;
   /** Replace all state. Used by persistence on load and by reset. */

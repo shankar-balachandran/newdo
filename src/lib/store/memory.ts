@@ -1,4 +1,4 @@
-import type { Obligation, Rule, Event, ScratchLine } from "@/lib/model/types";
+import type { Obligation, Rule, Event, ScratchLine, Person } from "@/lib/model/types";
 import type { Store, Snapshot } from "./store";
 
 export function createMemoryStore(seed: Omit<Snapshot, "scratch" | "hydrated">, hydrated = true): Store {
@@ -27,6 +27,10 @@ export function createMemoryStore(seed: Omit<Snapshot, "scratch" | "hydrated">, 
     },
     appendEvent(id: string, ev: Event) {
       replace(id, (o) => ({ ...o, history: [...o.history, ev] }));
+    },
+    putPerson(p: Person) {
+      snap = { ...snap, people: [...snap.people.filter((x) => x.id !== p.id), p] };
+      emit();
     },
     putRule(r: Rule) {
       snap = { ...snap, rules: [...snap.rules.filter((x) => x.id !== r.id), r] };

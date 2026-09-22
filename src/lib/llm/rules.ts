@@ -73,6 +73,32 @@ export function inferDeadline(text: string, now: Date): { deadline: Deadline | n
   return { deadline: { at: at.toISOString(), hardness, source: r.text }, matched: r.text };
 }
 
+// Capitalised word(s) in a position where a person's name usually sits.
+// "send Arun the quote", "ask Maya", "for Priya", "Dev asked", "to Arun".
+const NAME = "([A-Z][a-z]+(?:\\s[A-Z][a-z]+)?)";
+const NAME_PATTERNS = [
+  new RegExp(`\\b(?:send|ask|tell|email|call|ring|ping|text|remind|chase|meet|thank|pay|follow up with|reply to|write to)\\s+${NAME}\\b`),
+  new RegExp(`\\b(?:for|to|with|from)\\s+${NAME}\\b`),
+  new RegExp(`^${NAME}\\s+(?:asked|wants|needs|requested|is waiting|said)\\b`),
+  new RegExp(`\\b${NAME}'s\\b`),
+];
+const NOT_NAMES = new Set(["I", "The", "A", "An", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "Today", "Tomorrow", "Next", "This", "Q1", "Q2", "Q3", "Q4"]);
+
+/** Names in the text that no known person matches. */
+export function learnPeople(text: string, known: Person[]): Person[] {
+  const found = new Map<string, Person>();
+  for (const re of NAME_PATTERNS) {
+    const m = text.match(re);
+    if (!m) continue;
+    const name = m[1].trim();
+    if (NOT_NAMES.has(name) || NOT_NAMES.has(name.split(" ")[0])) continue;
+    if (known.some((p) => p.name.toLowerCase() === name.toLowerCase())) continue;
+    const id = "p_" + name.toLowerCase().replace(/[^a-z]+/g, "_");
+    if (!found.has(id)) found.set(id, { id, kind: "human", name, handles: [], relation: "unknown" });
+  }
+  return [...found.values()];
+}
+
 function cleanTitle(text: string, matchedDate: string | null) {
   let t = text.trim().replace(/[.!]+$/, "");
   if (matchedDate) {
@@ -140,7 +166,8 @@ export const rulesAdapter: Adapter = {
 
   async extract(text, _origin, ctx) {
     const { deadline, matched } = inferDeadline(text, ctx.now);
-    const people = findPeople(text, ctx.people);
+    const newPeople = learnPeople(text, ctx.people);
+    const people = findPeople(text, [...ctx.people, ...newPeople]);
     const effort = inferEffort(text);
     const doneWhen = DONE_WHEN.find(([re]) => re.test(text))?.[1] ?? "";
     const o: Extracted = {
@@ -153,7 +180,7 @@ export const rulesAdapter: Adapter = {
       effort,
       userNotes: "",
     };
-    return { obligations: [o], trace: TRACE };
+    return { obligations: [o], newPeople, trace: TRACE };
   },
 
   async correct(text, target, ctx): Promise<CorrectionResult> {
