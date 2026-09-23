@@ -84,4 +84,30 @@ How it was built in a day, and what we would tell a founder: https://beaverminds
 
 **Title:** I built a todo list where you never fill in a field. It works out who, when and how big from a sentence.
 
-**Body:** same as the HN comment, minus the last paragraph.
+**Body:**
+
+I built this because every todo app I've used makes me do the maintenance: fields, priorities, sorting, pruning. The app is a dumb store and I'm the scheduler.
+
+newdo inverts that. You type what you owe in plain words ("send Arun the revised quote by Thursday"). It works out who it's for, when it's due, how firm the date is and how big the job is, then shows you at most five things for today, each with a one-line reason. When it's wrong you say so in a sentence ("things from Arun are never urgent") and it writes a rule so the mistake doesn't repeat.
+
+Two deliberate decisions:
+
+1. No model. Dates, people and effort are inferred with rules. It's instant, works offline, and I wanted to see how far the idea gets before adding inference.
+
+2. Local-first. Everything lives in your browser. No account, no server, nothing leaves the machine.
+
+It opens with demo data so you can try it in thirty seconds: https://newdo.beaverminds.com
+
+Source and the one-page spec that drove the design: https://github.com/shankar-balachandran/newdo
+
+What I'd like to know: does the reason line under each item earn its place, or is it noise?
+
+---
+
+## Posted on launch day (23 Sep 2026)
+
+- Hacker News: https://news.ycombinator.com/item?id=49812662 (as shaanjus4u, first comment posted)
+- X: https://x.com/shankarbala87/status/2102656302216560938
+- LinkedIn personal: https://www.linkedin.com/feed/update/urn:li:activity:7508421153762209792/
+- LinkedIn Beaverminds page: https://www.linkedin.com/feed/update/urn:li:share:7508420552328376320
+- Reddit r/SideProject: not posted by Claude (site blocked in the browser extension); paste the body above.
